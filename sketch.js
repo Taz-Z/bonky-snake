@@ -19,9 +19,11 @@ let world;
 let runner;
 let snakeComp;
 let isAlive;
+let borders = [];
 
 const onCollision = ({ pairs }) => {
   const { bodyA, bodyB } = pairs[0];
+  console.log(bodyA, bodyB)
   if (
     !(
       (bodyA.label === "head" && bodyB.label === "particle") ||
@@ -46,14 +48,14 @@ const onCollision = ({ pairs }) => {
 
   Composite.add(world, constraint);
   snakeParticle = new SnakeBody(
-    random(40, width) - 40,
-    random(40, height) - 40,
+    random(40, width) - 140,
+    random(40, height) - 140,
     "particle"
   );
 };
 
 function setup() {
-  canvas = createCanvas(window.screen.width / 6, window.screen.height / 6);
+  canvas = createCanvas(window.screen.width / 2, window.screen.height / 2);
   frameRate(30);
   engine = Engine.create();
   world = engine.world;
@@ -61,19 +63,20 @@ function setup() {
   runner = Runner.create();
   isAlive = true;
   snake = [];
-  new Box(100, 100
-    
-    , 100, 100)
+  borders.push(new Box(0, 0, 100, height * 2));
+  borders.push(new Box(0, 0, width*2 , 100));
+  borders.push(new Box(0, height,  width*2, 100, false));
+  borders.push(new Box(width, 0,  100, height*2, false));
   snake.push(new SnakeBody(100, 100, "head"));
   snakeParticle = new SnakeBody(
-    random(40, width) - 40,
-    random(40, height) - 40,
+    random(40, width) - 140,
+    random(40, height) - 140,
     "particle"
   );
 
   Runner.run(runner, engine);
 
-  // Events.on(engine, "collisionStart", onCollision);
+  Events.on(engine, "collisionStart", onCollision);
 }
 
 function keyPressed() {
@@ -94,7 +97,9 @@ function draw() {
     text(GAME_OVER, 0, 50);
     return;
   }
+  
+  borders.forEach((s) => s.show());
 
-  // snake.forEach((s) => s.show());
-  // snakeParticle.show();
+  snake.forEach((s) => s.show());
+  snakeParticle.show();
 }

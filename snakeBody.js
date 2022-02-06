@@ -14,13 +14,7 @@ class SnakeBody {
   isHead() {
     return this.body.label === "head";
   }
-  isBody() {
-    return this.body.label === "body";
-  }
 
-  isParticle() {
-    return this.body.label === "particle";
-  }
   show() {
     const bodyPos = this.body.position;
     let angle = this.body.angle;
@@ -40,7 +34,7 @@ class SnakeBody {
     rectMode(CENTER);
     strokeWeight(1);
     stroke(255);
-    fill(255);
+    fill(this.isHead() ? 'rgb(0,255,0)': 123);
     ellipse(0, 0, this.r * 2);
     pop();
   }
