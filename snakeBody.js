@@ -1,26 +1,25 @@
 class SnakeBody {
   constructor(x, y, type) {
     const options = {
-      density: 0.1,
-      restitution: 1,
+      density: 100,
+      friction: 1,
+      restitution: 0,
+      label: type,
     };
-    this.x = x;
-    this.y = y;
-    this.body = Bodies.circle(x, y, 20, options);
-    this.type = type;
-    Composite.add(world, [this.body]);
+    this.r = 20;
+    this.body = Bodies.circle(x, y, this.r, options);
+    Composite.add(world, this.body);
   }
 
   isHead() {
-    return this.type === "head";
+    return this.body.label === "head";
   }
-
-  isTail() {
-    return this.type === "tail";
-  }
-
   isBody() {
-    return this.type === "body";
+    return this.body.label === "body";
+  }
+
+  isParticle() {
+    return this.body.label === "particle";
   }
   show() {
     const bodyPos = this.body.position;
@@ -38,11 +37,11 @@ class SnakeBody {
     push();
     translate(bodyPos.x, bodyPos.y);
     rotate(angle);
-    circle(
-      this.x,
-      this.y,
-      this.body.circleRadius * 2
-    );
+    rectMode(CENTER);
+    strokeWeight(1);
+    stroke(255);
+    fill(255);
+    ellipse(0, 0, this.r * 2);
     pop();
   }
 }
