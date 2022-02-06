@@ -48,8 +48,8 @@ const onCollision = ({ pairs }) => {
 
   Composite.add(world, constraint);
   snakeParticle = new SnakeBody(
-    random(40, width) - 140,
-    random(40, height) - 140,
+    random(140, width-140),
+    random(140, height-140),
     "particle"
   );
 };
