@@ -19,11 +19,28 @@ let world;
 let runner;
 let snakeComp;
 let isAlive;
+let snakeHead;
 let borders = [];
 
+
+const getMinMaxPosition = () => {
+  let maxX = 0;
+  let maxY = 0;
+  let minX = Infinity;
+  let minY = Infinity;
+  for (const snakeBody of snake) {
+    const {x, y} = snakeBody.body.position;
+    if(x > maxX) maxX = x;
+    if(x < minX) minX = x;
+    if(y < minY) minY = y;
+    if(y > maxY) maxY = y;
+  }
+  console.log(maxX, maxY, minX, minY)
+  return [minX, maxX, minY, maxY];
+}
 const onCollision = ({ pairs }) => {
   const { bodyA, bodyB } = pairs[0];
-  console.log(bodyA, bodyB)
+  console.log(bodyA.label, bodyB.label)
   if (
     !(
       (bodyA.label === "head" && bodyB.label === "particle") ||
@@ -34,6 +51,7 @@ const onCollision = ({ pairs }) => {
     return;
   }
   Composite.remove(world, snakeParticle.body);
+
 
   const { x, y } = snake.at(-1).body.position;
 
@@ -47,12 +65,26 @@ const onCollision = ({ pairs }) => {
   const constraint = new Constraint.create(options);
 
   Composite.add(world, constraint);
+  const [minX, maxX, minY, maxY] = getMinMaxPosition();
+  let randx = 0;
+  let randy = 0;
+
+  do {
+
+    randx = random(71, width-140);
+    randy = random(71, height-140);
+    console.log(randx, randy)
+
+  } while((randx < minX - 20 || randx > maxX + 20) && (randy > maxY + 20 || randy < minY - 20 ))
+
+
   snakeParticle = new SnakeBody(
-    random(140, width-140),
-    random(140, height-140),
+    randx,
+    randy,
     "particle"
   );
 };
+
 
 function setup() {
   canvas = createCanvas(window.screen.width / 2, window.screen.height / 2);
@@ -67,10 +99,12 @@ function setup() {
   borders.push(new Box(0, 0, width*2 , 100));
   borders.push(new Box(0, height,  width*2, 100, false));
   borders.push(new Box(width, 0,  100, height*2, false));
-  snake.push(new SnakeBody(100, 100, "head"));
+  snakeHead = new SnakeBody(100, 100, "head")
+  snake.push(snakeHead);
+
   snakeParticle = new SnakeBody(
-    random(40, width) - 140,
-    random(40, height) - 140,
+    random(71, width - 140),
+    random(71, height - 140),
     "particle"
   );
 
@@ -102,4 +136,5 @@ function draw() {
 
   snake.forEach((s) => s.show());
   snakeParticle.show();
+  // console.log(snakeParticle.body.position)
 }
